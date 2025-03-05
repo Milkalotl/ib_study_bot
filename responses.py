@@ -68,10 +68,9 @@ def exam_of_the_day(subjects: list, minyear: int, maxyear: int, time_o_year: int
         papers = randint(1,2)
     if time_o_year == 0:
         time_o_year = randint(1,2)
-
-    toy = "November" if time_o_year == 2 else "May"    
     if c_year == 2020:
         time_o_year = 2
+    toy = "November" if time_o_year == 2 else "May"    
 
     url: str = find_url(c_subject, c_year, toy, c_level, papers)
     return (c_subject, c_year, toy, c_level, papers, url)
