@@ -19,4 +19,4 @@ Nothing else is supported at the moment, and its just math and phys, but its alr
 
 
 If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!
-This robot's code can be found [here!](https://github.com/milkalolt/ib_study_bot), and yes, you can scream at me there too!
+This robot's code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!
