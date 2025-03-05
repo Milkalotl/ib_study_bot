@@ -6,11 +6,11 @@ day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday
 threattext = f"*Theres only * ***{day_of_exam-day_of_year}*** *days til exams!!*"
 
 
-single_letter_key: dict = {"m": "math", "p": "physics", "c": "chemistry", "b": "biology", "x": "computer_science", "s": "sports_exercise_and_health_science", "e": "english", "u": "spanish", "y": "business_management", "g": "geography", "n": "global_politics", "h": "history"}
+single_letter_key: dict = {"m": "math", "p": "physics", "c": "chemistry", "b": "biology", "x": "computer_science", "s": "sports_exercise_and_health_science", "e": "English_A_Language_and_literature", "u": "Spanish_A_Language_and_literature", "y": "business_management", "g": "geography", "n": "global_politics", "h": "history"}
 
 sciences = ["physics", "chemistry", "biology", "computer_science", "sports_exercise_and_health_science"]
 
-languages = ["english", "spanish"]
+languages = ["english_A_Language_and_literature", "spanish_A_Language_and_literature"]
 
 humanities = ["business_management", "geography", "global_politics", "history"]
 
@@ -21,7 +21,8 @@ def help_func():
         list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " || " + e + "\n"
 
     return f'## Hello! This is the eye bee docks bot!!\n\
-The syntax is simple!\nFor a random paper in math HL, physics HL, or chemistry SL, you would write\n```%bee m p c - h h s```\nIt\'s that simple! (spaces are optional, but dash is not\
+The syntax is simple!\nFor a random paper in math HL, physics HL, or chemistry SL, you would write\n```%bee m p c - h h s```\nIt\'s that simple! (spaces are optional, but dash is not)\n\
+Additional flag!!\n```%bee m p c - h h s / 2015 2022```\n This will specify min and max years!!\n\
 ### Supported subjects (WRITE AS STATED OR USE KEY):\n```{list_o_subjects}```\
 \nnotes: languages dont work lmao :)\n\
 If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!\n\
@@ -34,6 +35,17 @@ def text_formatter(params:tuple) -> str:
 
     return f'### Here is your exam! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
 
+def year_reader(ui:str) -> str:
+    ui_list = ui.split("/")
+    returnparams = []
+    returnparams.append(ui_list[0])
+    yearpart = ui_list[1].split(" ")
+    for e in yearpart:
+        if e.isnumeric():
+            returnparams.append(int(e))
+    return tuple(returnparams)
+
+
 
 def handle_string(user_input:str) -> str:
     if user_input == "help" or user_input == "h" or user_input == "":
@@ -43,6 +55,13 @@ def handle_string(user_input:str) -> str:
     u_i_list = user_input.split("-")
     subjects = []
     print(f'[{u_i_list}]')
+
+    minyear = 2010
+    maxyear = 2023
+    
+    if "/" in u_i_list[1]:
+        u_i_list[1], minyear, maxyear = year_reader(u_i_list[1])
+
     for word in u_i_list[0]:
         if word in single_letter_key:
             subjects.append(single_letter_key.get(word))
@@ -50,7 +69,9 @@ def handle_string(user_input:str) -> str:
     levellist = []
     for letter in levels:
         levellist.append("SL" if letter == "s" else "HL")
-    return text_formatter(exam_of_the_day(subjects, 2010, 2023, 0, levellist, 0));
+    
+
+    return text_formatter(exam_of_the_day(subjects, minyear, maxyear, 0, levellist, 0));
 
 
 def get_response(user_input:str) -> str:
@@ -75,61 +96,64 @@ def exam_of_the_day(subjects: list, minyear: int, maxyear: int, time_o_year: int
     url: str = find_url(c_subject, c_year, toy, c_level, papers)
     return (c_subject, c_year, toy, c_level, papers, url)
 
+#building
+def find_url_experimental(subject, year, toy, level, paper):
+    
+    baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
+    finalurl = ""
+    tz = "" if toy == "November" else "TZ1_"
+    
+    if year == 2023 and toy == "November":
+            baseurl += 'PDFs/'
+    elif year > 2022:
+            baseurl += 'PDF/'
+
+
 def find_url(subject, year, toy, level, paper):
     
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
     finalurl = ""
     tz = "" if toy == "November" else "TZ1_"
+
+    if year == 2023 and toy == "November":
+            baseurl += 'PDFs/'
+    elif year > 2022:
+            baseurl += 'PDF/'
+
     if subject == "math":
-        if year == 2023 and toy == "November":
-            finalurl =f'{baseurl}PDFs/Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-        if year > 2022:
-            finalurl =f'{baseurl}PDF/Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
         if year > 2020:
             finalurl =f'{baseurl}Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
             return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-        if year > 2015:
+        if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl =f'{baseurl}Mathematics/Mathematics_paper_{paper}__{tz}{level}'
             return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-        if year <= 2015:
-            finalurl =f'{baseurl}Group%205%20-%20Mathematics/Mathematics_paper_{paper}_{tz}{level}'
+        else:
+            finalurl =f'{baseurl}Group%205%20-%20Mathematics/Mathematics_paper_{paper}__{tz}{level}'
             return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
+    
+
     if subject in sciences:
-        if year == 2024:
-            finalurl =f'{baseurl}PDF/Experimental%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}' 
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-        if year == 2023:
-            finalurl =f'{baseurl}PDF/Experimental%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}' 
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-        if year > 2015:
+        if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl =f'{baseurl}Experimental%20sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}'
             return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-        if year <= 2015:
-            finalurl =f'{baseurl}Group%204%20-%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}'
+        else:
+            finalurl =f'{baseurl}Group%204%20-%20Sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}'
             return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
+    
+
     if subject in languages:
-        if year == 2024:
-            finalurl = f'{baseurl}PDF/Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}'
+        if year > 2015 and not (year == 2016 and toy == "May"):
+            finalurl = f'{baseurl}Studies%20in%20language%20and%20literature/{subject}_paper_{paper}__{tz}{level}'
             return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
-        if year == 2023:
-            finalurl = f'{baseurl}PDFs/Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}'
+        else:
+            finalurl = f'{baseurl}Group%201%20-%20Studies%20in%20Language%20and%20Literature/{subject}_paper_{paper}__{tz}{level}'
             return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
-        if year > 2015:
-            finalurl = f'{baseurl}Language%20acquisition/{subject.capitalize()}_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
-        if year <= 2015:
-            finalurl = f'{baseurl}Group%202%20-%20Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
+    
+
     if subject in humanities:
-        if year == 2024:
-            return f'{baseurl}PDF/Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf' 
-        if year == 2023:
-            return f'{baseurl}PDFs/Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf' 
-        if year > 2015:
+        if year > 2015 and not (year == 2016 and toy == "May"):
             return f'{baseurl}Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}__{tz}{level}.pdf'
-        if year <= 2015:
-            return f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf'
+        else:
+            return f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}__{tz}{level}.pdf'
 
     return "ERROR: SOMETHING WENT WRONG IN find_url FUNCTION"
