@@ -10,7 +10,8 @@ For a random paper in math HL, physics HL, or chemistry SL, you would write
 It's that simple! (spaces are optional, but dash is not
 
 ### Supported subjects (WRITE AS STATED OR USE KEY):
-```- m || math
+```
+- m || math
 - p || physics
 - c || chemistry
 - b || biology
