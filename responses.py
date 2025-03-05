@@ -30,7 +30,8 @@ This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bo
 
 def text_formatter(params:tuple) -> str:
     c_subject, c_year, toy, c_level, papers, url = params
-    hypertext = f'[{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers}]({url})' 
+    url_paper, url_markscheme = url
+    hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
 
     return f'### Here is your exam! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
 
@@ -72,36 +73,50 @@ def exam_of_the_day(subjects: list, minyear: int, maxyear: int, time_o_year: int
 def find_url(subject, year, toy, level, paper):
     
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
+    finalurl = ""
     tz = "" if toy == "November" else "TZ1_"
     if subject == "math":
-        if year == 2024:
-            return f'{baseurl}PDF/Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}.pdf'
-        if year == 2023:
-            return f'{baseurl}PDFs/Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}.pdf'
+        if year == 2023 and toy == "November":
+            finalurl =f'{baseurl}PDFs/Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
+        if year > 2022:
+            finalurl =f'{baseurl}PDF/Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
         if year > 2020:
-            return f'{baseurl}Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}.pdf'
+            finalurl =f'{baseurl}Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
         if year > 2015:
-            return f'{baseurl}Mathematics/Mathematics_paper_{paper}__{tz}{level}.pdf'
+            finalurl =f'{baseurl}Mathematics/Mathematics_paper_{paper}__{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
         if year <= 2015:
-            return f'{baseurl}Group%205%20-%20Mathematics/Mathematics_paper_{paper}_{tz}{level}.pdf'
+            finalurl =f'{baseurl}Group%205%20-%20Mathematics/Mathematics_paper_{paper}_{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
     if subject in sciences:
         if year == 2024:
-            return f'{baseurl}PDF/Experimental%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf' 
+            finalurl =f'{baseurl}PDF/Experimental%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}' 
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
         if year == 2023:
-            return f'{baseurl}PDFs/Experimental%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf' 
+            finalurl =f'{baseurl}PDF/Experimental%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}' 
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
         if year > 2015:
-            return f'{baseurl}Experimental%20sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}.pdf'
+            finalurl =f'{baseurl}Experimental%20sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
         if year <= 2015:
-            return f'{baseurl}Group%204%20-%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf'
+            finalurl =f'{baseurl}Group%204%20-%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
     if subject in languages:
         if year == 2024:
-            return f'{baseurl}PDF/Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf' 
+            finalurl = f'{baseurl}PDF/Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
         if year == 2023:
-            return f'{baseurl}PDFs/Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf' 
+            finalurl = f'{baseurl}PDFs/Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
         if year > 2015:
-            return f'{baseurl}Language%20acquisition/{subject.capitalize()}_paper_{paper}__{tz}{level}.pdf'
+            finalurl = f'{baseurl}Language%20acquisition/{subject.capitalize()}_paper_{paper}__{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
         if year <= 2015:
-            return f'{baseurl}Group%202%20-%20Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf'
+            finalurl = f'{baseurl}Group%202%20-%20Language%20acquisition/{subject.capitalize()}_paper_{paper}_{tz}{level}'
+            return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
     if subject in humanities:
         if year == 2024:
             return f'{baseurl}PDF/Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}_{tz}{level}.pdf' 
