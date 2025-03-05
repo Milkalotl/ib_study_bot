@@ -18,7 +18,7 @@ humanities = ["business_management", "geography", "global_politics", "history"]
 def help_func():
     list_o_subjects = ""
     for e in single_letter_key.values():
-        list_o_subjects += "- " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " || " + e + "\n"
+        list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " || " + e + "\n"
 
     return f'## Hello! This is the eye bee docks bot!!\n\
 The syntax is simple!\nFor a random paper in math HL, physics HL, or chemistry SL, you would write\n```%bee m p c - h h s```\nIt\'s that simple! (spaces are optional, but dash is not\
