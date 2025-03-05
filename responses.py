@@ -1,41 +1,48 @@
 from random import choice, randint
+from datetime import datetime
+day_of_year = datetime.now().timetuple().tm_yday
+day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday
 
+threattext = f"*Theres only * ***{day_of_exam-day_of_year}*** *days til exams!!*"
+
+
+single_letter_key: dict = {"m": "math", "p": "physics", "c": "chemistry", "b": "biology", "x": "computer_science", "s": "sports_exercise_and_health_science", "e": "english", "u": "spanish", "y": "business_management", "g": "geography", "n": "global_politics", "h": "history"}
 
 sciences = ["physics", "chemistry", "biology", "computer_science", "sports_exercise_and_health_science"]
+
 languages = ["english", "spanish"]
+
 humanities = ["business_management", "geography", "global_politics", "history"]
 
-
+# maybe make nicer?? whats the point lowkey
 def help_func():
     list_o_subjects = ""
-    for e in sciences:
-        list_o_subjects += "- " + e + "\n"
-    for e in languages:
-        list_o_subjects += "- " + e + "\n"
-    for e in humanities:
-        list_o_subjects += "- " + e + "\n"
+    for e in single_letter_key.values():
+        list_o_subjects += "- " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " || " + e + "\n"
 
     return f'## Hello! This is the eye bee docks bot!!\n\
 Please use **%bee** for a random subject, and **%bee [subject]** for a random paper in that subject!\n\
 Nothing else is supported at the moment, and its just math and phys, but its alright!! You got this for sure !!\n\
-### Supported subjects (WRITE AS STATED):\n{list_o_subjects}\
-\n\n\
-If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!'
+### Supported subjects (WRITE AS STATED OR USE KEY):\n```{list_o_subjects}```\
+\nnotes: languages dont work lmao :)\n\
+If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!\n\
+This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\n\n\n{threattext}'
 
 def text_formatter(params:tuple) -> str:
     c_subject, c_year, toy, c_level, papers, url = params
     hypertext = f'[{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers}]({url})' 
 
-    return f'Here is your exam! Have a lovely day -> {hypertext}'
+    return f'### Here is your exam! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
 
 
 def handle_string(user_input:str) -> str:
-    subjects = ["math", "physics"]
+    subjects = []
     print(f'[{user_input}]')
     if user_input == "help" or user_input == "h":
         return help_func()
-    if user_input != "":
-        subjects = [user_input]
+    for word in user_input:
+        if word in single_letter_key:
+            subjects.append(single_letter_key.get(word))
     return text_formatter(exam_of_the_day(subjects, 2010, 2023, 0, 0, 0));
 
 
