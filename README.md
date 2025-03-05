@@ -2,9 +2,10 @@
 (copy of help output)
 
 ## Hello! This is the eye bee docks bot!!
-Please use **%bee** for a random subject, and **%bee [subject]** for a random paper in that subject!
-Nothing else is supported at the moment, and its just math and phys, but its alright!! You got this for sure !!
-### Supported subjects (WRITE AS STATED OR USE KEY):
+The syntax is simple!
+For a random paper in math HL, physics HL, or chemistry SL, you would write
+```%bee m p c - h h s```
+It's that simple! (spaces are optional, but dash is not### Supported subjects (WRITE AS STATED OR USE KEY):
 ```- m || math
 - p || physics
 - c || chemistry
