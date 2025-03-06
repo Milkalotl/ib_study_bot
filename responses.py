@@ -12,7 +12,7 @@ sciences = ["physics", "chemistry", "biology", "computer_science", "sports_exerc
 
 languages = ["english_A_Language_and_literature", "spanish_A_Language_and_literature"]
 
-humanities = ["business_management", "geography", "global_politics", "history"]
+humanities = ["Business_Management", "geography", "global_politics", "history"]
 
 # maybe make nicer?? whats the point lowkey
 def help_func():
@@ -29,10 +29,13 @@ If you find any bugs, or if the links stop working, please message me incessantl
 This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\n\n\n{threattext}'
 
 def text_formatter(params:tuple) -> str:
+    print("Start of tf")
     c_subject, c_year, toy, c_level, papers, url = params
+    print("Params assigned")
     url_paper, url_markscheme = url
+    print("Url became")
     hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
-
+    print("text formatter works!!")
     return f'### Here is your exam! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
 
 def year_reader(ui:str) -> str:
@@ -54,7 +57,7 @@ def handle_string(user_input:str) -> str:
         return "Please specify levels with a - ! Refer to %bee help!"
     u_i_list = user_input.split("-")
     subjects = []
-    print(f'[{u_i_list}]')
+    print(f'{u_i_list}')
 
     minyear = 2010
     maxyear = 2023
@@ -70,7 +73,7 @@ def handle_string(user_input:str) -> str:
     for letter in levels:
         levellist.append("SL" if letter == "s" else "HL")
     
-
+    print("handle string works!!")
     return text_formatter(exam_of_the_day(subjects, minyear, maxyear, 0, levellist, 0));
 
 
@@ -94,6 +97,7 @@ def exam_of_the_day(subjects: list, minyear: int, maxyear: int, time_o_year: int
     toy = "November" if time_o_year == 2 else "May"    
 
     url: str = find_url(c_subject, c_year, toy, c_level, papers)
+    print("exam of the day works!!")
     return (c_subject, c_year, toy, c_level, papers, url)
 
 #building
@@ -112,7 +116,7 @@ def find_url_experimental(subject, year, toy, level, paper):
 def find_url(subject, year, toy, level, paper):
     
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
-    finalurl = ""
+    finalurl = "ERROR: SOMETHING WENT WRONG IN find_url FUNCTION"
     tz = "" if toy == "November" else "TZ1_"
 
     if year == 2023 and toy == "November":
@@ -122,38 +126,33 @@ def find_url(subject, year, toy, level, paper):
 
     if subject == "math":
         if year > 2020:
-            finalurl =f'{baseurl}Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-        if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl =f'{baseurl}Mathematics/Mathematics_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
+            finalurl = f'{baseurl}Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
+        elif year > 2015 and not (year == 2016 and toy == "May"):
+            finalurl = f'{baseurl}Mathematics/Mathematics_paper_{paper}__{tz}{level}'
         else:
-            finalurl =f'{baseurl}Group%205%20-%20Mathematics/Mathematics_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-    
+            finalurl = f'{baseurl}Group%205%20-%20Mathematics/Mathematics_paper_{paper}_{tz}{level}'
 
-    if subject in sciences:
+    elif subject in sciences:
         if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl =f'{baseurl}Experimental%20sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
+            finalurl = f'{baseurl}Experimental%20sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}'
         else:
-            finalurl =f'{baseurl}Group%204%20-%20Sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf") 
-    
+            finalurl = f'{baseurl}Group%204%20-%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}'
 
-    if subject in languages:
+    elif subject in languages:
         if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl = f'{baseurl}Studies%20in%20language%20and%20literature/{subject}_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
         else:
-            finalurl = f'{baseurl}Group%201%20-%20Studies%20in%20Language%20and%20Literature/{subject}_paper_{paper}__{tz}{level}'
-            return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
-    
-
-    if subject in humanities:
+            finalurl = f'{baseurl}Group%201%20-%20Studies%20in%20Language%20and%20Literature/{subject}_paper_{paper}_{tz}{level}'
+    elif subject == "Business_Management":
+        print("#BM") 
         if year > 2015 and not (year == 2016 and toy == "May"):
-            return f'{baseurl}Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}__{tz}{level}.pdf'
+            finalurl = f'{baseurl}Individuals%20and%20Societies/{subject}_paper_{paper}__{level}'
         else:
-            return f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}__{tz}{level}.pdf'
-
-    return "ERROR: SOMETHING WENT WRONG IN find_url FUNCTION"
+            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/Business_and_Management__paper_{paper}_{level}'
+    elif subject in humanities:
+        print("#HUMA") 
+        if year > 2015 and not (year == 2016 and toy == "May"):
+            finalurl = f'{baseurl}Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}__{level}'
+        else:
+            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}_{level}'
+    return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
