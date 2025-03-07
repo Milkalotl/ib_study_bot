@@ -1,18 +1,21 @@
 from random import choice, randint
 from datetime import datetime
+
+
 day_of_year = datetime.now().timetuple().tm_yday
 day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday
+
 
 threattext = f"*Theres only * ***{day_of_exam-day_of_year}*** *days til exams!!*"
 
 
-single_letter_key: dict = {"m": "math", "p": "physics", "c": "chemistry", "b": "biology", "x": "computer_science", "s": "sports_exercise_and_health_science", "e": "English_A_Language_and_literature", "u": "Spanish_A_Language_and_literature", "y": "business_management", "g": "geography", "n": "global_politics", "h": "history"}
+single_letter_key: dict = {"m": "math", "p": "physics", "c": "chemistry", "b": "biology", "x": "computer_science", "s": "sports_exercise_and_health_science", "e": "English_A_Language_and_literature", "u": "Spanish_A_Language_and_literature", "y": "Business_management", "g": "geography", "n": "global_politics", "h": "history"}
 
 sciences = ["physics", "chemistry", "biology", "computer_science", "sports_exercise_and_health_science"]
 
 languages = ["english_A_Language_and_literature", "spanish_A_Language_and_literature"]
 
-humanities = ["Business_Management", "geography", "global_politics", "history"]
+humanities = ["Business_management", "geography", "global_politics", "history"]
 
 # maybe make nicer?? whats the point lowkey
 def help_func():
@@ -34,7 +37,7 @@ def text_formatter(params:tuple) -> str:
     print("Params assigned")
     url_paper, url_markscheme = url
     print("Url became")
-    hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
+    hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})'
     print("text formatter works!!")
     return f'### Here is your exam! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
 
@@ -61,7 +64,7 @@ def handle_string(user_input:str) -> str:
 
     minyear = 2010
     maxyear = 2023
-    
+
     if "/" in u_i_list[1]:
         u_i_list[1], minyear, maxyear = year_reader(u_i_list[1])
 
@@ -72,7 +75,7 @@ def handle_string(user_input:str) -> str:
     levellist = []
     for letter in levels:
         levellist.append("SL" if letter == "s" else "HL")
-    
+
     print("handle string works!!")
     return text_formatter(exam_of_the_day(subjects, minyear, maxyear, 0, levellist, 0));
 
@@ -80,7 +83,7 @@ def handle_string(user_input:str) -> str:
 def get_response(user_input:str) -> str:
     lowered: str = user_input.lower()
     final_response = handle_string(lowered[5:])
-    print(f'Response:[{final_response}]')
+    print(f'\033[0;35mResponse:[{final_response}]\033[0m')
     return final_response
     #return handle_string(user_input[4:])
 
@@ -94,7 +97,7 @@ def exam_of_the_day(subjects: list, minyear: int, maxyear: int, time_o_year: int
         time_o_year = randint(1,2)
     if c_year == 2020:
         time_o_year = 2
-    toy = "November" if time_o_year == 2 else "May"    
+    toy = "November" if time_o_year == 2 else "May"
 
     url: str = find_url(c_subject, c_year, toy, c_level, papers)
     print("exam of the day works!!")
@@ -102,11 +105,11 @@ def exam_of_the_day(subjects: list, minyear: int, maxyear: int, time_o_year: int
 
 #building
 def find_url_experimental(subject, year, toy, level, paper):
-    
+
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
     finalurl = ""
     tz = "" if toy == "November" else "TZ1_"
-    
+
     if year == 2023 and toy == "November":
             baseurl += 'PDFs/'
     elif year > 2022:
@@ -114,7 +117,7 @@ def find_url_experimental(subject, year, toy, level, paper):
 
 
 def find_url(subject, year, toy, level, paper):
-    
+
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
     finalurl = "ERROR: SOMETHING WENT WRONG IN find_url FUNCTION"
     tz = "" if toy == "November" else "TZ1_"
@@ -125,6 +128,7 @@ def find_url(subject, year, toy, level, paper):
             baseurl += 'PDF/'
 
     if subject == "math":
+        print("#MATH")
         if year > 2020:
             finalurl = f'{baseurl}Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
         elif year > 2015 and not (year == 2016 and toy == "May"):
@@ -133,26 +137,28 @@ def find_url(subject, year, toy, level, paper):
             finalurl = f'{baseurl}Group%205%20-%20Mathematics/Mathematics_paper_{paper}_{tz}{level}'
 
     elif subject in sciences:
+        print("#SCI")
         if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl = f'{baseurl}Experimental%20sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}'
         else:
             finalurl = f'{baseurl}Group%204%20-%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}'
 
     elif subject in languages:
+        print("#LANG")
         if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl = f'{baseurl}Studies%20in%20language%20and%20literature/{subject}_paper_{paper}__{tz}{level}'
         else:
             finalurl = f'{baseurl}Group%201%20-%20Studies%20in%20Language%20and%20Literature/{subject}_paper_{paper}_{tz}{level}'
-    elif subject == "Business_Management":
-        print("#BM") 
+    elif subject == "Business_management":
+        print("#BM")
         if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Individuals%20and%20Societies/{subject}_paper_{paper}__{level}'
+            finalurl = f'{baseurl}Individuals%20and%20societies/{subject}_paper_{paper}__{level}'
         else:
-            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/Business_and_Management__paper_{paper}_{level}'
+            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/Business_and_management_paper_{paper}_{level}'
     elif subject in humanities:
-        print("#HUMA") 
+        print("#HUMA")
         if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}__{level}'
+            finalurl = f'{baseurl}Individuals%20and%20societies/{subject.capitalize()}_paper_{paper}__{level}'
         else:
             finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}_{level}'
     return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
