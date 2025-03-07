@@ -1,9 +1,11 @@
-from random import choice, randint
 from datetime import datetime
+from random import choice, randint
+
 day_of_year = datetime.now().timetuple().tm_yday
 day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday
 
 threattext = f"*Theres only * ***{day_of_exam-day_of_year}*** *days til exams!!*"
+
 
 
 single_letter_key: dict = {"m": "math", "p": "physics", "c": "chemistry", "b": "biology", "x": "computer_science", "s": "sports_exercise_and_health_science", "e": "English_A_Language_and_literature", "u": "Spanish_A_Language_and_literature", "y": "business_management", "g": "geography", "n": "global_politics", "h": "history"}
@@ -14,95 +16,72 @@ languages = ["english_A_Language_and_literature", "spanish_A_Language_and_litera
 
 humanities = ["Business_Management", "geography", "global_politics", "history"]
 
-# maybe make nicer?? whats the point lowkey
-def help_func():
-    list_o_subjects = ""
-    for e in single_letter_key.values():
-        list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " || " + e + "\n"
+iflag = lambda params: int(params[1:])
+stringflag = lambda params: params[1:]
 
-    return f'## Hello! This is the eye bee docks bot!!\n\
-The syntax is simple!\nFor a random paper in math HL, physics HL, or chemistry SL, you would write\n```%bee m p c - h h s```\nIt\'s that simple! (spaces are optional, but dash is not)\n\
-Additional flag!!\n```%bee m p c - h h s / 2015 2022```\n This will specify min and max years!!\n\
-### Supported subjects (WRITE AS STATED OR USE KEY):\n```{list_o_subjects}```\
-\nnotes: languages dont work lmao :)\n\
-If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!\n\
-This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\n\n\n{threattext}'
-
-def text_formatter(params:tuple) -> str:
-    print("Start of tf")
-    c_subject, c_year, toy, c_level, papers, url = params
-    print("Params assigned")
-    url_paper, url_markscheme = url
-    print("Url became")
-    hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
-    print("text formatter works!!")
-    return f'### Here is your exam! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
-
-def year_reader(ui:str) -> str:
-    ui_list = ui.split("/")
-    returnparams = []
-    returnparams.append(ui_list[0])
-    yearpart = ui_list[1].split(" ")
-    for e in yearpart:
-        if e.isnumeric():
-            returnparams.append(int(e))
-    return tuple(returnparams)
-
-
+def get_response(user_input:str) -> str:
+    final_response = handle_string(user_input[5:])
+    print(f'Response:[{final_response}]')
+    return final_response
 
 def handle_string(user_input:str) -> str:
     if user_input == "help" or user_input == "h" or user_input == "":
         return help_func()
-    if "-" not in user_input:
-        return "Please specify levels with a - ! Refer to %bee help!"
-    u_i_list = user_input.split("-")
-    subjects = []
-    print(f'{u_i_list}')
+    if "/" not in user_input:
+        return "Please specify levels with a / ! Refer to %bee help!"
+    ui_split = user_input.split("-")
+    content = ui_split[0]
+    content = content.lower()
+    ui_split = ui_split[1:]
+    maxyear, minyear, papers, name = 0, 0, 0, "";
 
-    minyear = 2010
-    maxyear = 2023
-    
-    if "/" in u_i_list[1]:
-        u_i_list[1], minyear, maxyear = year_reader(u_i_list[1])
+    for n in ui_split:
+        if "N" in n:
+            print("namechosen")
+            name = " " + stringflag(n)
+        elif "x" in n:
+            maxyear = iflag(n)
+        elif "n" in n:
+            minyear = iflag(n)
+        elif "p" in n:
+            papers = iflag(n)
 
-    for word in u_i_list[0]:
-        if word in single_letter_key:
-            subjects.append(single_letter_key.get(word))
-    levels = str(u_i_list[1]).replace(" ", "")
+    subjects, levels = content.split("/")
     levellist = []
+    subjectlist = []
     for letter in levels:
         levellist.append("SL" if letter == "s" else "HL")
-    
+    for subject in subjects:
+        subjectlist.append(single_letter_key.get(subject))
+
     print("handle string works!!")
-    return text_formatter(exam_of_the_day(subjects, minyear, maxyear, 0, levellist, 0));
+    return text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name));
 
+def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: int, level: list[str], papers: int, name:str):
+    c_subject = choice(subjectlist)
+    c_level = level[subjectlist.index(c_subject)]
 
-def get_response(user_input:str) -> str:
-    lowered: str = user_input.lower()
-    final_response = handle_string(lowered[5:])
-    print(f'Response:[{final_response}]')
-    return final_response
-    #return handle_string(user_input[4:])
+    if minyear == 0:
+        minyear = 2010
+    if maxyear == 0:
+        maxyear = 2023
 
-def exam_of_the_day(subjects: list, minyear: int, maxyear: int, time_o_year: int, level: list[str], papers: int):
-    c_subject = choice(subjects)
-    c_level = level[subjects.index(c_subject)]
     c_year = randint(minyear, maxyear)
+
     if papers == 0:
         papers = randint(1,2)
     if time_o_year == 0:
         time_o_year = randint(1,2)
+
+
     if c_year == 2020:
         time_o_year = 2
     toy = "November" if time_o_year == 2 else "May"    
 
     url: str = find_url(c_subject, c_year, toy, c_level, papers)
     print("exam of the day works!!")
-    return (c_subject, c_year, toy, c_level, papers, url)
-
-#building
+    return (c_subject, c_year, toy, c_level, papers, url, name)
 def find_url_experimental(subject, year, toy, level, paper):
-    
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
     finalurl = ""
     tz = "" if toy == "November" else "TZ1_"
@@ -111,10 +90,7 @@ def find_url_experimental(subject, year, toy, level, paper):
             baseurl += 'PDFs/'
     elif year > 2022:
             baseurl += 'PDF/'
-
-
 def find_url(subject, year, toy, level, paper):
-    
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
     finalurl = "ERROR: SOMETHING WENT WRONG IN find_url FUNCTION"
     tz = "" if toy == "November" else "TZ1_"
@@ -156,3 +132,33 @@ def find_url(subject, year, toy, level, paper):
         else:
             finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}_{level}'
     return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
+
+def text_formatter(params:tuple) -> str:
+    print("Start of tf")
+    c_subject, c_year, toy, c_level, papers, url, name = params
+    print("Params assigned")
+    url_paper, url_markscheme = url
+    print("Url became")
+    hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
+    print("text formatter works!!")
+    return f'### Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
+
+# maybe make nicer?? whats the point lowkey
+def help_func():
+    list_o_subjects = ""
+    for e in single_letter_key.values():
+        list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " || " + e + "\n"
+
+    return f'## Hello! This is the eye bee docks bot!!\n\
+The syntax is simple!\nFor a random paper in math HL, physics HL, or chemistry SL, you would write\n```%bee m p c / h h s```\nIt\'s that simple! (spaces are optional, but slash is not)\n\
+### Additional flags!!\
+\n\
+This will specify min and max years!!```%bee m p c / h h s -n2015 -x2022```\
+This will specify your paper!!```%bee m p c / h h s -p1```\
+This will specify your name!!```%bee m p c / h h s -NSunny```\
+\n\
+### Supported subjects (PLEASE USE KEY):\n```{list_o_subjects}```\
+\nnotes: languages dont work lmao :)\n\
+If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!\n\
+This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\n\n\n{threattext}'
+

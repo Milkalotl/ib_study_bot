@@ -5,3 +5,5 @@
 - Allow for ALL PAPERS option (new flag?)
   - Maybe implement actual flags like -x2025 for max and -n2010 for min.
 - Add paper 3 support for math + all others
+- Add sl sl sl syntax (subjectlevel, subjectlevel, subjectlevel)
+
