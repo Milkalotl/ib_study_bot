@@ -1,6 +1,7 @@
 from datetime import datetime
 from random import choice, randint
 from url import urlhandler
+from discord import embed
 
 version:float = 0.103
 
@@ -28,8 +29,10 @@ def get_response(user_input:str) -> str:
     if len(handletuple) == 1:
         return str(handletuple)
     hypertext, name = handletuple
-    final_response = f'### Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
-    print(f'Response:[{final_response}]')
+    final_response = f' Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
+    #print(f'Response:[{final_response}]')
+    if len(final_response) > 4096:
+        final_response = finalurl[:4096] 
     return final_response
 
 def handle_string(user_input:str) -> tuple:
@@ -38,7 +41,13 @@ def handle_string(user_input:str) -> tuple:
     if "/" not in user_input:
         return "Please specify levels with a / ! Refer to %bee help!"
     user_input = user_input.strip()
+    
     repetitions: int = (int(x) if (x := user_input[:1]).isnumeric() else 1)
+    if repetitions > 1:
+        user_input = user_input[1:]
+    
+    print(repetitions)
+
 
     ui_split = user_input.split("-")
     content = ui_split[0]
@@ -49,7 +58,7 @@ def handle_string(user_input:str) -> tuple:
     for n in ui_split:
         match n[:1]:
             case "N":
-                print("namechosen")
+                #print("namechosen")
                 name = " " + stringflag(n)
             case "x":
                 maxyear = iflag(n)
@@ -63,16 +72,16 @@ def handle_string(user_input:str) -> tuple:
 
     subjects, levels = content.replace(" ", "").split("/")
     levellist = []
-    subjectlist = []
+    subjectlist = [] 
     for letter in levels:
         levellist.append("SL" if letter == "s" else "HL")
     for subject in subjects:
         psrt = single_letter_key.get(subject)
         if psrt == None:
             return "Something went wrong! One of your subjects is invalid!"
-        print(psrt, end="/")
+        #print(psrt, end="/")
         subjectlist.append(psrt)
-    print()
+    #print()
     print("handle string works!!")
 
     if repetitions == 1:
@@ -81,11 +90,13 @@ def handle_string(user_input:str) -> tuple:
 
     replist = []
     tf_text, tf_name = "", ""
+    print(replist, tf_name, tf_text)
     for n in range(repetitions):
         tf_text, tf_name  = text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name))
+        print(f"{tf_text} ! {tf_name}")
         replist.append(tf_text)
     repstring = "\n\n".join(replist)
-    print(type(repstring), repstring)
+    #print(type(repstring), repstring)
     return (repstring, tf_name)
         
 
@@ -111,7 +122,7 @@ def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: 
     toy = "November" if time_o_year == 2 else "May"    
 
     url: str = find_url(c_subject, c_year, toy, c_level, papers)
-    print("exam of the day works!!")
+    #print("exam of the day works!!")
     return (c_subject, c_year, toy, c_level, papers, url, name)
 
 def find_url(subject, year, toy, level, paper):
@@ -125,7 +136,7 @@ def find_url(subject, year, toy, level, paper):
             baseurl += 'PDF/'
 
     if subject == "Math":
-        print("#MATH")
+        #print("MATH")
         if year > 2020:
             finalurl = f'{baseurl}Mathematics/'
         elif year > 2015 and not (year == 2016 and toy == "May"):
@@ -134,57 +145,58 @@ def find_url(subject, year, toy, level, paper):
             finalurl = f'{baseurl}Group%205%20-%20Mathematics/'
 
     elif subject in sciences:
-        print("#SCI")
+        #print("SCI")
         if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl = f'{baseurl}Experimental%20sciences/'
         else:
             finalurl = f'{baseurl}Group%204%20-%20Sciences/'
 
     elif subject in languages:
-        print("#LANG")
+        #print("LANG")
         if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl = f'{baseurl}Studies%20in%20language%20and%20literature/'
         else:
             finalurl = f'{baseurl}Group%201%20-%20Studies%20in%20Language%20and%20Literature/'
     elif subject in humanities:
-        print("#HUMA")
+        #print("HUMA")
         if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl = f'{baseurl}Individuals%20and%20societies/'
         else:
             finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/'
+-+
 
     finalurl += urlhandler(subject, paper, level, finalurl) #found in url.py
     return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
 
-def text_formatter(params:tuple) -> str:
-    print("Start of tf")
+def text_formatter(params:tuple) -> tuple:
+    #print("Start of tf")
     c_subject, c_year, toy, c_level, papers, url, name = params
-    print("Params assigned")
+    #print("Params assigned")
     url_paper, url_markscheme = url
     if "url_grab_failed" in url_paper:
         return f"I'm sorry, there was an error!\nInformation:{c_subject} {c_year} {toy} {c_level} {papers} || {url_paper}"
-    print("Url became")
+    #print("Url became")
     hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level} || Paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
-    print("text formatter works!!")
-    return hypertext, name
+    #print("text formatter works!!")
+    return (hypertext, name)
 
-# maybe make nicer?? whats the point lowkey
+ #maybe make nicer?? whats the point lowkey
 def help_func():
     list_o_subjects = ""
     for e in single_letter_key.values():
-        list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " || " + e + "\n"
+        list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " | " + e + "\n"
 
-    return f'## Hello! This is the eye bee docks bot!!\n\
+    return f' Hello! This is the eye bee docks bot!!\n\
 Current Version: {version}\n\
 The syntax is simple!\nFor a random paper in Math HL, Physics HL, or chemistry SL, you would write\n```%bee m p c / h h s```\nIt\'s that simple! (spaces are optional, but slash is not)\n\
-### Additional flags!!\
+ Additional flags!!\
 \n\
 This will specify min and max years!!```%bee m p c / h h s -n2015 -x2022```\
 This will specify a specific year!!```%bee m p c / h h s -y2018```\
 This will specify your paper!!```%bee m p c / h h s -p1```\
 This will specify your name!!```%bee m p c / h h s -NSunny```\
 \n\
-### Supported subjects (PLEASE USE KEY):\n```{list_o_subjects}```\
+ Supported subjects (PLEASE USE KEY):\n```{list_o_subjects}```\
 \nnotes: if your link doesnt work for one of the subjects, please try a different subject level! Especially sports science!\n\
 If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!\n\
 This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\n\n\n{threattext}'

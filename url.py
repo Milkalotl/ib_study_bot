@@ -25,34 +25,34 @@ def urlhandler(subject, paper, level, furl:str) -> str:
     return urlpicker(subject, paper, level, newlist)
 
 def urlpicker(subject, paper, level, urllist:list)-> str:
-    print(f"Original Subject: {subject}")
+    #print(f"Original Subject: {subject}")
     for e in keywords:
-        print(e, end = " / ")
-        print(e[0])
+        #print(e, end = " / ")
+        #print(e[0])
         if subject == e[0]:
             subject = subjectmod(subject, urllist, e[1:])
             break
-    print(f"Current Subject: {subject}")
+    #print(f"Current Subject: {subject}")
     valid_urllist = []
     for g in urllist:
         #print(g,end="**")
-        print("> " + g)
-        #if subject in g and str(paper) in g and level in g:
-                #valid_urllist.append(g.strip(".pdf"))
+        #print("> " + g)
+        if subject in g and str(paper) in g and level in g:
+                valid_urllist.append(g.strip(".pdf"))
         if subject in g:
-            print("Subject FOUND", end="/")
+            #print("Subject FOUND", end="/")
             if "paper_"+str(paper) in g:
-                print("Paper FOUND", end="/")
+                #print("Paper FOUND", end="/")
                 if level in g:
-                    print("Level FOUND")
+                    #print("Level FOUND")
                     valid_urllist.append(g.strip(".pdf"))
-    print()
-    print(valid_urllist)
+    #print()
+    #print(valid_urllist)
     if subject != "Spanish" and subject != "French":
         for e in valid_urllist:
             if "French" in e or "Spanish" in e:
                 valid_urllist.remove(e)
-    print(valid_urllist)
+    #print(valid_urllist)
     if len(valid_urllist) != 0:
         return choice(valid_urllist)
     return "url_grab_failed"
