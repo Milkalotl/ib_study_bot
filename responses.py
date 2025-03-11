@@ -1,5 +1,6 @@
 from datetime import datetime
 from random import choice, randint
+from url import urlhandler
 
 day_of_year = datetime.now().timetuple().tm_yday
 day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday
@@ -81,15 +82,7 @@ def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: 
     url: str = find_url(c_subject, c_year, toy, c_level, papers)
     print("exam of the day works!!")
     return (c_subject, c_year, toy, c_level, papers, url, name)
-def find_url_experimental(subject, year, toy, level, paper):
-    baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
-    finalurl = ""
-    tz = "" if toy == "November" else "TZ1_"
-    
-    if year == 2023 and toy == "November":
-            baseurl += 'PDFs/'
-    elif year > 2022:
-            baseurl += 'PDF/'
+
 def find_url(subject, year, toy, level, paper):
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
     finalurl = "ERROR: SOMETHING WENT WRONG IN find_url FUNCTION"
@@ -102,35 +95,37 @@ def find_url(subject, year, toy, level, paper):
 
     if subject == "math":
         if year > 2020:
-            finalurl = f'{baseurl}Mathematics/Mathematics_analysis_and_approaches_paper_{paper}__{tz}{level}'
+            finalurl = f'{baseurl}Mathematics/'
         elif year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Mathematics/Mathematics_paper_{paper}__{tz}{level}'
+            finalurl = f'{baseurl}Mathematics/'
         else:
-            finalurl = f'{baseurl}Group%205%20-%20Mathematics/Mathematics_paper_{paper}_{tz}{level}'
+            finalurl = f'{baseurl}Group%205%20-%20Mathematics/'
 
     elif subject in sciences:
         if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Experimental%20sciences/{subject.capitalize()}_paper_{paper}__{tz}{level}'
+            finalurl = f'{baseurl}Experimental%20sciences/'
         else:
-            finalurl = f'{baseurl}Group%204%20-%20Sciences/{subject.capitalize()}_paper_{paper}_{tz}{level}'
+            finalurl = f'{baseurl}Group%204%20-%20Sciences/'
 
     elif subject in languages:
         if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Studies%20in%20language%20and%20literature/{subject}_paper_{paper}__{tz}{level}'
+            finalurl = f'{baseurl}Studies%20in%20language%20and%20literature/'
         else:
-            finalurl = f'{baseurl}Group%201%20-%20Studies%20in%20Language%20and%20Literature/{subject}_paper_{paper}_{tz}{level}'
+            finalurl = f'{baseurl}Group%201%20-%20Studies%20in%20Language%20and%20Literature/'
     elif subject == "Business_Management":
-        print("#BM") 
+        print("#BM")
         if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Individuals%20and%20Societies/{subject}_paper_{paper}__{level}'
+            finalurl = f'{baseurl}Individuals%20and%20Societies/'
         else:
-            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/Business_and_Management__paper_{paper}_{level}'
+            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/'
     elif subject in humanities:
-        print("#HUMA") 
+        print("#HUMA")
         if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}__{level}'
+            finalurl = f'{baseurl}Individuals%20and%20Societies/'
         else:
-            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/{subject.capitalize()}_paper_{paper}_{level}'
+            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/'
+
+    finalurl += urlhandler(subject, paper, level, finalurl) #found in url.py
     return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
 
 def text_formatter(params:tuple) -> str:
@@ -162,3 +157,8 @@ This will specify your name!!```%bee m p c / h h s -NSunny```\
 If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!\n\
 This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\n\n\n{threattext}'
 
+
+
+if __name__ == "__main__":
+    inputstr = input(": ")
+    print(get_response("%bee " + inputstr))
