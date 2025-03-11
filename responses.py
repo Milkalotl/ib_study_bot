@@ -24,15 +24,22 @@ iflag = lambda params: int(params[1:])
 stringflag = lambda params: params[1:]
 
 def get_response(user_input:str) -> str:
-    final_response = handle_string(user_input[5:])
+    handletuple = handle_string(user_input[5:])
+    if len(handletuple) == 1:
+        return str(handletuple)
+    hypertext, name = handletuple
+    final_response = f'### Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
     print(f'Response:[{final_response}]')
     return final_response
 
-def handle_string(user_input:str) -> str:
+def handle_string(user_input:str) -> tuple:
     if user_input == "help" or user_input == "h" or user_input == "":
         return help_func()
     if "/" not in user_input:
         return "Please specify levels with a / ! Refer to %bee help!"
+    user_input = user_input.strip()
+    repetitions: int = (int(x) if (x := user_input[:1]).isnumeric() else 1)
+
     ui_split = user_input.split("-")
     content = ui_split[0]
     content = content.lower()
@@ -67,7 +74,20 @@ def handle_string(user_input:str) -> str:
         subjectlist.append(psrt)
     print()
     print("handle string works!!")
-    return text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name));
+
+    if repetitions == 1:
+        return text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name))
+
+
+    replist = []
+    tf_text, tf_name = "", ""
+    for n in range(repetitions):
+        tf_text, tf_name  = text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name))
+        replist.append(tf_text)
+    repstring = "\n\n".join(replist)
+    print(type(repstring), repstring)
+    return (repstring, tf_name)
+        
 
 def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: int, level: list[str], papers: int, name:str):
     c_subject = choice(subjectlist)
@@ -146,7 +166,7 @@ def text_formatter(params:tuple) -> str:
     print("Url became")
     hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level} || Paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
     print("text formatter works!!")
-    return f'### Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
+    return hypertext, name
 
 # maybe make nicer?? whats the point lowkey
 def help_func():
