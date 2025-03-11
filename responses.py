@@ -2,20 +2,23 @@ from datetime import datetime
 from random import choice, randint
 from url import urlhandler
 
+version:float = 0.103
+
+
 day_of_year = datetime.now().timetuple().tm_yday
 day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday
 
-threattext = f"*Theres only * ***{day_of_exam-day_of_year}*** *days til exams!!*"
+threattext = f"*There's only* ***{day_of_exam-day_of_year}*** *days til exams!!*"
 
 
 
-single_letter_key: dict = {"m": "math", "p": "physics", "c": "chemistry", "b": "biology", "x": "computer_science", "s": "sports_exercise_and_health_science", "e": "English_A_Language_and_literature", "u": "Spanish_A_Language_and_literature", "y": "business_management", "g": "geography", "n": "global_politics", "h": "history"}
+single_letter_key: dict = {"m": "Math", "p": "Physics", "c": "Chemistry", "b": "Biology", "x": "Computer_science", "s": "Sports_exercise_and_health_science", "e": "English", "u": "Spanish", "y": "Business", "g": "Geography", "n": "Global_politics", "h": "History"}
 
-sciences = ["physics", "chemistry", "biology", "computer_science", "sports_exercise_and_health_science"]
+sciences = ["Physics", "Chemistry", "Biology", "Computer_science", "Sports_exercise_and_health_science"]
 
-languages = ["english_A_Language_and_literature", "spanish_A_Language_and_literature"]
+languages = ["English", "Spanish"]
 
-humanities = ["Business_Management", "geography", "global_politics", "history"]
+humanities = ["Business_management", "Geography", "Global_politics", "History"]
 
 iflag = lambda params: int(params[1:])
 stringflag = lambda params: params[1:]
@@ -37,15 +40,19 @@ def handle_string(user_input:str) -> str:
     maxyear, minyear, papers, name = 0, 0, 0, "";
 
     for n in ui_split:
-        if "N" in n:
-            print("namechosen")
-            name = " " + stringflag(n)
-        elif "x" in n:
-            maxyear = iflag(n)
-        elif "n" in n:
-            minyear = iflag(n)
-        elif "p" in n:
-            papers = iflag(n)
+        match n[:1]:
+            case "N":
+                print("namechosen")
+                name = " " + stringflag(n)
+            case "x":
+                maxyear = iflag(n)
+            case "n":
+                minyear = iflag(n)
+            case "p":
+                papers = iflag(n)
+            case "y":
+                maxyear = iflag(n)
+                minyear = iflag(n)
 
     subjects, levels = content.split("/")
     levellist = []
@@ -53,7 +60,9 @@ def handle_string(user_input:str) -> str:
     for letter in levels:
         levellist.append("SL" if letter == "s" else "HL")
     for subject in subjects:
-        subjectlist.append(single_letter_key.get(subject))
+        if (x := single_letter_key.get(subject)) == None:
+            return "Sorry! One of your subjects was incorrect!"
+        subjectlist.append(x)
 
     print("handle string works!!")
     return text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name));
@@ -93,7 +102,8 @@ def find_url(subject, year, toy, level, paper):
     elif year > 2022:
             baseurl += 'PDF/'
 
-    if subject == "math":
+    if subject == "Math":
+        print("#MATH")
         if year > 2020:
             finalurl = f'{baseurl}Mathematics/'
         elif year > 2015 and not (year == 2016 and toy == "May"):
@@ -102,22 +112,18 @@ def find_url(subject, year, toy, level, paper):
             finalurl = f'{baseurl}Group%205%20-%20Mathematics/'
 
     elif subject in sciences:
+        print("#SCI")
         if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl = f'{baseurl}Experimental%20sciences/'
         else:
             finalurl = f'{baseurl}Group%204%20-%20Sciences/'
 
     elif subject in languages:
+        print("#LANG")
         if year > 2015 and not (year == 2016 and toy == "May"):
             finalurl = f'{baseurl}Studies%20in%20language%20and%20literature/'
         else:
             finalurl = f'{baseurl}Group%201%20-%20Studies%20in%20Language%20and%20Literature/'
-    elif subject == "Business_Management":
-        print("#BM")
-        if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Individuals%20and%20Societies/'
-        else:
-            finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/'
     elif subject in humanities:
         print("#HUMA")
         if year > 2015 and not (year == 2016 and toy == "May"):
@@ -133,8 +139,10 @@ def text_formatter(params:tuple) -> str:
     c_subject, c_year, toy, c_level, papers, url, name = params
     print("Params assigned")
     url_paper, url_markscheme = url
+    if "url_grab_failed" in url_paper:
+        return f"I'm sorry, there was an error!\nInformation:{c_subject} {c_year} {toy} {c_level} {papers} || {url_paper}"
     print("Url became")
-    hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level}, paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
+    hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level} || Paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
     print("text formatter works!!")
     return f'### Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
 
@@ -145,7 +153,8 @@ def help_func():
         list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " || " + e + "\n"
 
     return f'## Hello! This is the eye bee docks bot!!\n\
-The syntax is simple!\nFor a random paper in math HL, physics HL, or chemistry SL, you would write\n```%bee m p c / h h s```\nIt\'s that simple! (spaces are optional, but slash is not)\n\
+Current Version: {version}\n\
+The syntax is simple!\nFor a random paper in Math HL, Physics HL, or chemistry SL, you would write\n```%bee m p c / h h s```\nIt\'s that simple! (spaces are optional, but slash is not)\n\
 ### Additional flags!!\
 \n\
 This will specify min and max years!!```%bee m p c / h h s -n2015 -x2022```\

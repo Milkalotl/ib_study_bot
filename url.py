@@ -3,7 +3,7 @@ from random import choice
 from bs4 import BeautifulSoup
 
 keywords = []
-def initkeys():
+def initkeys() -> None:
     f = open("subjectkeys", "r")
     filelist = f.read().split("-")
     for e in filelist:
@@ -25,11 +25,14 @@ def urlhandler(subject, paper, level, furl:str) -> str:
     return urlpicker(subject, paper, level, newlist)
 
 def urlpicker(subject, paper, level, urllist:list)-> str:
+    print(f"Original Subject: {subject}")
     for e in keywords:
-        if subject in e[0]:
-            print("SUBJECT WAS " + subject)
-            subject = subjectmod(subject, urllist, e)
-            print("SUBJECT NOW IS" + subject)
+        print(e)
+        print(e[0])
+        if subject == e[0]:
+            subject = subjectmod(subject, urllist, e[1:])
+            break
+    print(f"Current Subject: {subject}")
     valid_urllist = []
     for g in urllist:
         #print(g,end="**")
@@ -38,12 +41,17 @@ def urlpicker(subject, paper, level, urllist:list)-> str:
                 #valid_urllist.append(g.strip(".pdf"))
         if subject in g:
             print("Subject FOUND", end="/")
-            if str(paper) in g:
+            if "paper_"+str(paper) in g:
                 print("Paper FOUND", end="/")
                 if level in g:
                     print("Level FOUND")
                     valid_urllist.append(g.strip(".pdf"))
     print()
+    print(valid_urllist)
+    if subject != "Spanish" and subject != "French":
+        for e in valid_urllist:
+            if "French" in e or "Spanish" in e:
+                valid_urllist.remove(e)
     print(valid_urllist)
     if len(valid_urllist) != 0:
         return choice(valid_urllist)
@@ -52,7 +60,7 @@ def subjectmod(subject, urllist:list, keylist:list)-> str:
     for f in keylist:
         for g in urllist:
             if f in g:
-                return f
+                return str(f)
 
 if __name__ == "__main__":
     initkeys()

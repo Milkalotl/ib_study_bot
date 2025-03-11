@@ -2,6 +2,7 @@
 (copy of help output)
 
 ## Hello! This is the eye bee docks bot!!
+Current Version: 0.103
 The syntax is simple!
 For a random paper in math HL, physics HL, or chemistry SL, you would write
 ```
