@@ -27,7 +27,7 @@ def urlhandler(subject, paper, level, furl:str) -> str:
 def urlpicker(subject, paper, level, urllist:list)-> str:
     print(f"Original Subject: {subject}")
     for e in keywords:
-        print(e)
+        print(e, end = " / ")
         print(e[0])
         if subject == e[0]:
             subject = subjectmod(subject, urllist, e[1:])

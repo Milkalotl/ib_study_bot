@@ -18,7 +18,7 @@ sciences = ["Physics", "Chemistry", "Biology", "Computer_science", "Sports_exerc
 
 languages = ["English", "Spanish"]
 
-humanities = ["Business_management", "Geography", "Global_politics", "History"]
+humanities = ["Business", "Geography", "Global_politics", "History"]
 
 iflag = lambda params: int(params[1:])
 stringflag = lambda params: params[1:]
@@ -54,16 +54,18 @@ def handle_string(user_input:str) -> str:
                 maxyear = iflag(n)
                 minyear = iflag(n)
 
-    subjects, levels = content.split("/")
+    subjects, levels = content.replace(" ", "").split("/")
     levellist = []
     subjectlist = []
     for letter in levels:
         levellist.append("SL" if letter == "s" else "HL")
     for subject in subjects:
-        if (x := single_letter_key.get(subject)) == None:
-            return "Sorry! One of your subjects was incorrect!"
-        subjectlist.append(x)
-
+        psrt = single_letter_key.get(subject)
+        if psrt == None:
+            return "Something went wrong! One of your subjects is invalid!"
+        print(psrt, end="/")
+        subjectlist.append(psrt)
+    print()
     print("handle string works!!")
     return text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name));
 
@@ -127,7 +129,7 @@ def find_url(subject, year, toy, level, paper):
     elif subject in humanities:
         print("#HUMA")
         if year > 2015 and not (year == 2016 and toy == "May"):
-            finalurl = f'{baseurl}Individuals%20and%20Societies/'
+            finalurl = f'{baseurl}Individuals%20and%20societies/'
         else:
             finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/'
 
@@ -158,16 +160,18 @@ The syntax is simple!\nFor a random paper in Math HL, Physics HL, or chemistry S
 ### Additional flags!!\
 \n\
 This will specify min and max years!!```%bee m p c / h h s -n2015 -x2022```\
+This will specify a specific year!!```%bee m p c / h h s -y2018```\
 This will specify your paper!!```%bee m p c / h h s -p1```\
 This will specify your name!!```%bee m p c / h h s -NSunny```\
 \n\
 ### Supported subjects (PLEASE USE KEY):\n```{list_o_subjects}```\
-\nnotes: languages dont work lmao :)\n\
+\nnotes: if your link doesnt work for one of the subjects, please try a different subject level! Especially sports science!\n\
 If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!\n\
 This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\n\n\n{threattext}'
 
 
 
 if __name__ == "__main__":
-    inputstr = input(": ")
+    import sys
+    inputstr = sys.argv[1]
     print(get_response("%bee " + inputstr))
