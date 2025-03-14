@@ -40,12 +40,11 @@ def handle_string(user_input:str) -> tuple:
     if "/" not in user_input:
         return "Please specify levels with a / ! Refer to %bee help!"
     user_input = user_input.strip()
-    
     ui_split = user_input.split("-")
     content = ui_split[0]
     content = content.lower()
     ui_split = ui_split[1:]
-    maxyear, minyear, papers, repetitions, name = 0, 0, 0, 0, "";
+    maxyear, minyear, papers, repetitions, name = 0, 0, 0, 1, "";
     for n in ui_split:
         match n[:1]:
             case "N":
@@ -78,9 +77,8 @@ def handle_string(user_input:str) -> tuple:
     print("handle string works!!")
 
     if repetitions == 1:
+        print("rep=1")
         return text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name))
-
-
     replist = []
     tf_text, tf_name = "", ""
     print(replist, tf_name, tf_text)
