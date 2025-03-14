@@ -21,7 +21,7 @@ def urlhandler(subject, paper, level, furl:str) -> str:
     newlist = []
     for n in inputlist:
         num = n.find(".pdf")
-        newlist.append(n[:(num+4)])
+        newlist.append(n[:(num)])
     return urlpicker(subject, paper, level, newlist)
 
 def urlpicker(subject, paper, level, urllist:list)-> str:
@@ -36,18 +36,19 @@ def urlpicker(subject, paper, level, urllist:list)-> str:
     valid_urllist = []
     for g in urllist:
         #print(g,end="**")
-        #print("> " + g)
-        if subject in g and str(paper) in g and level in g:
-                valid_urllist.append(g.strip(".pdf"))
+        print("> " + g)
         if subject in g:
-            #print("Subject FOUND", end="/")
+            print("Subject FOUND", end="/")
             if "paper_"+str(paper) in g:
-                #print("Paper FOUND", end="/")
+                print("Paper FOUND", end="/")
                 if level in g:
-                    #print("Level FOUND")
-                    valid_urllist.append(g.strip(".pdf"))
+                    print("Level FOUND")
+                    valid_urllist.append(g)
     #print()
     #print(valid_urllist)
+    for e in valid_urllist:
+        if "markscheme" in e:
+            valid_urllist.remove(e)
     if subject != "Spanish" and subject != "French":
         for e in valid_urllist:
             if "French" in e or "Spanish" in e:

@@ -29,6 +29,7 @@ def get_response(user_input:str) -> str:
     hypertext, name = handletuple
     final_response = f' Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
     #print(f'Response:[{final_response}]')
+    print(len(final_response))
     if len(final_response) > 4096:
         final_response = finalurl[:4096] 
     return final_response
