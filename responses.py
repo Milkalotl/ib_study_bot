@@ -1,7 +1,6 @@
 from datetime import datetime
 from random import choice, randint
 from url import urlhandler
-from discord import embed
 
 version:float = 0.103
 
@@ -12,13 +11,12 @@ day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday
 threattext = f"*There's only* ***{day_of_exam-day_of_year}*** *days til exams!!*"
 
 
-
 single_letter_key: dict = {"m": "Math", "p": "Physics", "c": "Chemistry", "b": "Biology", "x": "Computer_science", "s": "Sports_exercise_and_health_science", "e": "English", "u": "Spanish", "y": "Business", "g": "Geography", "n": "Global_politics", "h": "History"}
 
 sciences = ["Physics", "Chemistry", "Biology", "Computer_science", "Sports_exercise_and_health_science"]
 
 languages = ["English", "Spanish"]
-
+    
 humanities = ["Business", "Geography", "Global_politics", "History"]
 
 iflag = lambda params: int(params[1:])
@@ -42,19 +40,11 @@ def handle_string(user_input:str) -> tuple:
         return "Please specify levels with a / ! Refer to %bee help!"
     user_input = user_input.strip()
     
-    repetitions: int = (int(x) if (x := user_input[:1]).isnumeric() else 1)
-    if repetitions > 1:
-        user_input = user_input[1:]
-    
-    print(repetitions)
-
-
     ui_split = user_input.split("-")
     content = ui_split[0]
     content = content.lower()
     ui_split = ui_split[1:]
-    maxyear, minyear, papers, name = 0, 0, 0, "";
-
+    maxyear, minyear, papers, repetitions, name = 0, 0, 0, 0, "";
     for n in ui_split:
         match n[:1]:
             case "N":
@@ -69,6 +59,8 @@ def handle_string(user_input:str) -> tuple:
             case "y":
                 maxyear = iflag(n)
                 minyear = iflag(n)
+            case "r":
+                repetitions = iflag(n)
 
     subjects, levels = content.replace(" ", "").split("/")
     levellist = []
@@ -163,7 +155,6 @@ def find_url(subject, year, toy, level, paper):
             finalurl = f'{baseurl}Individuals%20and%20societies/'
         else:
             finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/'
--+
 
     finalurl += urlhandler(subject, paper, level, finalurl) #found in url.py
     return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
