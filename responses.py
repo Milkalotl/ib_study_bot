@@ -23,7 +23,7 @@ iflag = lambda params: int(params[1:])
 stringflag = lambda params: params[1:]
 
 def get_response(user_input:str) -> str:
-    handletuple = handle_string(user_input[5:])
+    handletuple = handle_string(user_input[4:])
     if len(handletuple) == 1:
         return str(handletuple)
     hypertext, name = handletuple
