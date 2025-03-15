@@ -185,6 +185,7 @@ This will specify min and max years!!```%bee m p c / h h s -n2015 -x2022```\
 This will specify a specific year!!```%bee m p c / h h s -y2018```\
 This will specify your paper!!```%bee m p c / h h s -p1```\
 This will specify your name!!```%bee m p c / h h s -NSunny```\
+This will specify the number of repetitions!!```%bee m p c / h h s -r5```\
 \n\
  Supported subjects (PLEASE USE KEY):\n```{list_o_subjects}```\
 \nnotes: if your link doesnt work for one of the subjects, please try a different subject level! Especially sports science!\n\
