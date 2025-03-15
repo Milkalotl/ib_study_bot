@@ -37,6 +37,7 @@ def get_response(user_input:str) -> str:
 def handle_string(user_input:str) -> tuple:
     if user_input == "help" or user_input == "h" or user_input == "":
         return help_func()
+        #comment
     if "/" not in user_input:
         return "Please specify levels with a / ! Refer to %bee help!"
     user_input = user_input.strip()
