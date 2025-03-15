@@ -22,6 +22,10 @@ This will specify your paper!!
 ```
 %bee m p c / h h s -p1
 ```
+This will specify the number of repetitions!!
+```
+%bee m p c / h h s -r5
+```
 This will specify your name!!
 ```
 %bee m p c / h h s -NSunny
