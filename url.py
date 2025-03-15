@@ -49,9 +49,9 @@ def urlpicker(subject, paper, level, urllist:list)-> str:
     for e in valid_urllist:
         if "markscheme" in e:
             valid_urllist.remove(e)
-    if subject != "Spanish" and subject != "French":
+    if subject != "Spanish" and subject != "French" and subject != "German":
         for e in valid_urllist:
-            if "French" in e or "Spanish" in e:
+            if "French" in e or "Spanish" in e or "German" in e:
                 valid_urllist.remove(e)
     #print(valid_urllist)
     if len(valid_urllist) != 0:

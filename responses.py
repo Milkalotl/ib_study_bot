@@ -32,7 +32,7 @@ def get_response(user_input:str) -> str:
     print(len(final_response))
     if len(final_response) > 4096:
         final_response = finalurl[:4096] 
-    return final_response
+    return "I AM THE REAL BOT : " + final_response
 
 def handle_string(user_input:str) -> tuple:
     if user_input == "help" or user_input == "h" or user_input == "":
