@@ -30,12 +30,12 @@ async def on_ready():
     except Exception as e:
         print("Error: ", e)
 
-@bot.tree.command(name="bee", description=^"Please refer to /help for syntax")
+@bot.tree.command(name="bee", description="Please refer to /help for syntax")
 async def bee(interaction: Interaction, arg:str):
     response = get_response(arg, interaction.user.display_name)
     await interaction.response.send_message(embed=response)
 
-@bot.tree.command(name="help", description=^"Run for help!")
+@bot.tree.command(name="help", description="Run for help!")
 async def help(interaction: Interaction):
     response = help_func()
     await interaction.response.send_message(embed=response)
