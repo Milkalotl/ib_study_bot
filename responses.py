@@ -35,35 +35,12 @@ def get_response(user_input:str, user_name:str) -> str:
     #    final_response = finalurl[:4096] 
     #return final_response
 
-def handle_string(user_input:str, user_name:str) -> tuple:
-    if user_input == "help" or user_input == "h" or user_input == "":
-        return help_func()
-        #comment
+def handle_string(user_input:str, user_name:str, maxyear, minyear, papers, name, repetitions) -> tuple:
     if "/" not in user_input:
-        return "Please specify levels with a / ! Refer to %bee help!"
+         return "Please specify levels with a / ! Refer to /help!"
     user_input = user_input.strip()
-    ui_split = user_input.split("-")
-    content = ui_split[0]
-    content = content.lower()
-    ui_split = ui_split[1:]
-    maxyear, minyear, papers, repetitions, name = 0, 0, 0, 1, user_name;
-    for n in ui_split:
-        match n[:1]:
-            case "N":
-                #print("namechosen")
-                name = " " + stringflag(n)
-            case "x":
-                maxyear = iflag(n)
-            case "n":
-                minyear = iflag(n)
-            case "p":
-                papers = iflag(n)
-            case "y":
-                maxyear = iflag(n)
-                minyear = iflag(n)
-            case "r":
-                repetitions = iflag(n)
-
+    if name == None:
+        name = user_name
     subjects, levels = content.replace(" ", "").split("/")
     levellist = []
     subjectlist = [] 
@@ -95,12 +72,6 @@ def handle_string(user_input:str, user_name:str) -> tuple:
 def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: int, level: list[str], papers: int):
     c_subject = choice(subjectlist)
     c_level = level[subjectlist.index(c_subject)]
-
-    if minyear == 0:
-        minyear = 2010
-    if maxyear == 0:
-        maxyear = 2023
-
     c_year = randint(minyear, maxyear)
 
     if papers == 0:

@@ -5,7 +5,7 @@ from discord import Intents, Embed, Interaction, app_commands
 import asyncio
 from itertools import cycle
 from dotenv import load_dotenv
-from responses import get_response
+from responses import get_response, help_func 
 from discord.ext import commands, tasks
 
 
@@ -30,9 +30,14 @@ async def on_ready():
     except Exception as e:
         print("Error: ", e)
 
-@bot.tree.command(name="bee", description="Sigma rizzler")
+@bot.tree.command(name="bee", description=^"Please refer to /help for syntax")
 async def bee(interaction: Interaction, arg:str):
     response = get_response(arg, interaction.user.display_name)
+    await interaction.response.send_message(embed=response)
+
+@bot.tree.command(name="help", description=^"Run for help!")
+async def help(interaction: Interaction):
+    response = help_func()
     await interaction.response.send_message(embed=response)
 
 
