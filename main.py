@@ -1,55 +1,45 @@
 from typing import Final
 
 import os
-
+from discord import Intents, Embed, Interaction, app_commands
+import asyncio
+from itertools import cycle
 from dotenv import load_dotenv
-from discord import Intents, Client, Message
 from responses import get_response
-from discord.ext import commands
+from discord.ext import commands, tasks
+
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv("DISCORD_TOKEN")
 
 intents: Intents = Intents.default()
 intents.message_content = True
-client: Client =  Client(intents=intents)
+bot = commands.Bot(command_prefix='%', intents=intents)
 
+@bot.command()
+async def bee(ctx, arg):
+    response = get_response(arg, message.author.id)
+    await ctx.send(embed=response)
 
-
-async def send_message(message: Message, user_message: str) -> None:
-    if not user_message:
-        print("Message was empty because intents were not enabled probably")
-        return
-    if is_private := user_message[0] == '?':
-        user_message = user_message[1:]
+@bot.event
+async def on_ready():
+    print(f"{bot.user} is now running!")
     try:
-        response = get_response(user_message)
-        await message.author.send(response) if is_private else await message.channel.send(response)
+        synced_commands = await bot.tree.sync()
+        print(f"Synced {synced_commands}")
     except Exception as e:
-        print(e)
+        print("Error: ", e)
 
-@client.event
-async def on_ready() -> None:
-    print(f"{client.user} is now running!")
-
-@client.event
-async def on_message(message: Message) -> None:
-    if message.author == client.user:
-        return
-    username: str = str(message.author)
-    user_message: str = message.content
-    channel: str = str(message.channel)
-
-    print(f'[{channel}] {username}: "{user_message}"')
-    if (message.content.find("%bee")) == -1:
-        print("NOSEND")
-        return
-    await send_message(message, user_message)
+@bot.tree.command(name="bee", description="Sigma rizzler")
+async def bee(interaction: Interaction, arg:str):
+    response = get_response(arg, interaction.user.display_name)
+    await interaction.response.send_message(embed=response)
 
 
-def main() -> None:
-    client.run(token=TOKEN)
+
+
+def main():
+    bot.run(token=TOKEN)
 
 if __name__ == "__main__":
     main()
-

@@ -1,6 +1,7 @@
 from datetime import datetime
 from random import choice, randint
 from url import urlhandler
+from discord import Embed
 
 version:float = 0.103
 
@@ -22,19 +23,19 @@ humanities = ["Business", "Geography", "Global_politics", "History"]
 iflag = lambda params: int(params[1:])
 stringflag = lambda params: params[1:]
 
-def get_response(user_input:str) -> str:
-    handletuple = handle_string(user_input[4:])
-    if len(handletuple) == 1:
-        return str(handletuple)
-    hypertext, name = handletuple
-    final_response = f' Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
-    #print(f'Response:[{final_response}]')
-    print(len(final_response))
-    if len(final_response) > 4096:
-        final_response = finalurl[:4096] 
-    return final_response
+def get_response(user_input:str, user_name:str) -> str:
+    final_embed = handle_string(user_input, user_name)
+    final_embed.set_author(name="★sunny★")
+    return final_embed
 
-def handle_string(user_input:str) -> tuple:
+    #final_response = f' Here is your exam{name.capitalize()}! Have a lovely day!\n\n{hypertext}\n\n{threattext}'
+    #print(f'Response:[{final_response}]')
+    #print(len(final_response))
+    #if len(final_response) > 4096:
+    #    final_response = finalurl[:4096] 
+    #return final_response
+
+def handle_string(user_input:str, user_name:str) -> tuple:
     if user_input == "help" or user_input == "h" or user_input == "":
         return help_func()
         #comment
@@ -45,7 +46,7 @@ def handle_string(user_input:str) -> tuple:
     content = ui_split[0]
     content = content.lower()
     ui_split = ui_split[1:]
-    maxyear, minyear, papers, repetitions, name = 0, 0, 0, 1, "";
+    maxyear, minyear, papers, repetitions, name = 0, 0, 0, 1, user_name;
     for n in ui_split:
         match n[:1]:
             case "N":
@@ -79,20 +80,19 @@ def handle_string(user_input:str) -> tuple:
 
     if repetitions == 1:
         print("rep=1")
-        return text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name))
+        return embed_builder(text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers)), name)
     replist = []
     tf_text, tf_name = "", ""
     print(replist, tf_name, tf_text)
     for n in range(repetitions):
-        tf_text, tf_name  = text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers,name))
-        print(f"{tf_text} ! {tf_name}")
+        tf_text = text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, papers))
         replist.append(tf_text)
     repstring = "\n\n".join(replist)
     #print(type(repstring), repstring)
-    return (repstring, tf_name)
+    return embed_builder(repstring, name)
         
 
-def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: int, level: list[str], papers: int, name:str):
+def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: int, level: list[str], papers: int):
     c_subject = choice(subjectlist)
     c_level = level[subjectlist.index(c_subject)]
 
@@ -115,7 +115,7 @@ def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: 
 
     url: str = find_url(c_subject, c_year, toy, c_level, papers)
     #print("exam of the day works!!")
-    return (c_subject, c_year, toy, c_level, papers, url, name)
+    return (c_subject, c_year, toy, c_level, papers, url)
 
 def find_url(subject, year, toy, level, paper):
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
@@ -161,7 +161,7 @@ def find_url(subject, year, toy, level, paper):
 
 def text_formatter(params:tuple) -> tuple:
     #print("Start of tf")
-    c_subject, c_year, toy, c_level, papers, url, name = params
+    c_subject, c_year, toy, c_level, papers, url = params
     #print("Params assigned")
     url_paper, url_markscheme = url
     if "url_grab_failed" in url_paper:
@@ -169,15 +169,21 @@ def text_formatter(params:tuple) -> tuple:
     #print("Url became")
     hypertext = f'[**{c_subject.capitalize()} {c_year} {toy} {c_level} || Paper {papers} **]({url_paper})\n[Markscheme]({url_markscheme})' 
     #print("text formatter works!!")
-    return (hypertext, name)
+    return hypertext
 
  #maybe make nicer?? whats the point lowkey
+def embed_builder(hypertext, name):
+    built_embed = Embed(
+                    title=f"Here you go {name}!",
+                    description=f"{hypertext}\n\n{threattext}"
+        )
+    return built_embed
 def help_func():
     list_o_subjects = ""
     for e in single_letter_key.values():
         list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " | " + e + "\n"
 
-    return f' Hello! This is the eye bee docks bot!!\n\
+    return Embed(title="HELP!", description=f' Hello! This is the eye bee docks bot!!\n\
 Current Version: {version}\n\
 The syntax is simple!\nFor a random paper in Math HL, Physics HL, or chemistry SL, you would write\n```%bee m p c / h h s```\nIt\'s that simple! (spaces are optional, but slash is not)\n\
  Additional flags!!\
@@ -191,9 +197,8 @@ This will specify the number of repetitions!!```%bee m p c / h h s -r5```\
  Supported subjects (PLEASE USE KEY):\n```{list_o_subjects}```\
 \nnotes: if your link doesnt work for one of the subjects, please try a different subject level! Especially sports science!\n\
 If you find any bugs, or if the links stop working, please message me incessantly until I yell and block you!!! I will fix asap!\n\
-This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\n\n\n{threattext}'
-
-
+This robot\'s code can be found [here!](https://github.com/Milkalotl/ib_study_bot), and yes, you can scream at me there too!\
+This robot is also hosted on sunny\'s server, so please be nice...\n\n\n{threattext}')
 
 if __name__ == "__main__":
     import sys
