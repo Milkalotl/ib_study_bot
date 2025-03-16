@@ -23,12 +23,12 @@ async def bee(ctx, arg):
 
 @bot.event
 async def on_ready():
-    print(f"{bot.user} is now running!")
     try:
         synced_commands = await bot.tree.sync()
         print(f"Synced {synced_commands}")
     except Exception as e:
         print("Error: ", e)
+    print(f"{bot.user} is now running!")
 
 @bot.tree.command(name="bee", description="Please refer to /help for syntax")
 async def bee(interaction: Interaction, arg:str, max_year:int=2023, min_year:int=2010, specific_year:int = None, paper:int=0, name:str=None, repetitions:int=1):

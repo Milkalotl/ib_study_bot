@@ -24,7 +24,7 @@ iflag = lambda params: int(params[1:])
 stringflag = lambda params: params[1:]
 
 def get_response(user_input:str, user_name:str, maxyear, minyear, paper, name, repetitions) -> str:
-    print("getresponse")
+    #print("getresponse")
     final_embed = handle_string(user_input, user_name, maxyear, minyear, paper, name, repetitions)
     final_embed.set_author(name="★sunny★")
     return final_embed
@@ -37,14 +37,14 @@ def get_response(user_input:str, user_name:str, maxyear, minyear, paper, name, r
     #return final_response
 
 def handle_string(user_input:str, user_name:str, maxyear, minyear, paper, name, repetitions) -> tuple:
-    print("handlestring")
+    #print("handlestring")
     if "/" not in user_input:
          return error_func(1, "Please specify levels with a / ! Refer to /help!")
     user_input = user_input.strip()
     if name == None:
         name = user_name
     subjects, levels = user_input.replace(" ", "").lower().split("/")
-    print("subjects separated")
+    #print("subjects separated")
     levellist = []
     subjectlist = [] 
     for letter in levels:
@@ -55,8 +55,8 @@ def handle_string(user_input:str, user_name:str, maxyear, minyear, paper, name, 
             return error_func(2, "Something went wrong! One of your subjects is invalid!") 
         #print(psrt, end="/")
         subjectlist.append(psrt)
-    print(subjectlist)
-    print("handle string works!!")
+    #print(subjectlist)
+    #print("handle string works!!")
 
     if repetitions == 1:
         print("rep=1")
@@ -70,7 +70,7 @@ def handle_string(user_input:str, user_name:str, maxyear, minyear, paper, name, 
     tf_text, tf_name = "", ""
     print(replist, tf_name, tf_text)
     for n in range(repetitions):
-        print("rep={repetitions}")
+        print(f"#############rep={n}#################")
         tf_var = exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, paper)
         if type(tf_var) == Embed:
             return tf_var
