@@ -31,8 +31,11 @@ async def on_ready():
         print("Error: ", e)
 
 @bot.tree.command(name="bee", description="Please refer to /help for syntax")
-async def bee(interaction: Interaction, arg:str):
-    response = get_response(arg, interaction.user.display_name)
+async def bee(interaction: Interaction, arg:str, max_year:int=2023, min_year:int=2010, specific_year:int = None, paper:int=0, name:str=None, repetitions:int=1):
+    if specific_year != None:
+        max_year = specific_year
+        min_year = specific_year
+    response = get_response(arg, interaction.user.display_name, max_year, min_year, paper, name, repetitions)
     await interaction.response.send_message(embed=response)
 
 @bot.tree.command(name="help", description="Run for help!")
