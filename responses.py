@@ -1,7 +1,7 @@
 from datetime import datetime
 from random import choice, randint
 from url import urlhandler
-from discord import Embed
+from discord import Embed, Color
 
 version:float = 0.513
 
@@ -39,7 +39,7 @@ def get_response(user_input:str, user_name:str, maxyear, minyear, paper, name, r
 def handle_string(user_input:str, user_name:str, maxyear, minyear, paper, name, repetitions) -> tuple:
     print("handlestring")
     if "/" not in user_input:
-         return "Please specify levels with a / ! Refer to /help!"
+         return error_func(1, "Please specify levels with a / ! Refer to /help!")
     user_input = user_input.strip()
     if name == None:
         name = user_name
@@ -52,7 +52,7 @@ def handle_string(user_input:str, user_name:str, maxyear, minyear, paper, name, 
     for subject in subjects:
         psrt = single_letter_key.get(subject)
         if psrt == None:
-            return "Something went wrong! One of your subjects is invalid!"
+            return error_func(2, "Something went wrong! One of your subjects is invalid!") 
         #print(psrt, end="/")
         subjectlist.append(psrt)
     print(subjectlist)
@@ -60,15 +60,25 @@ def handle_string(user_input:str, user_name:str, maxyear, minyear, paper, name, 
 
     if repetitions == 1:
         print("rep=1")
-        return embed_builder(text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, paper)), name)
+        tf_var = exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, paper)
+        if type(tf_var) == Embed:
+            return tf_var
+        eb_var = text_formatter(tf_var)
+        print(eb_var)
+        return embed_builder(eb_var,name)
     replist = []
     tf_text, tf_name = "", ""
     print(replist, tf_name, tf_text)
     for n in range(repetitions):
-        tf_text = text_formatter(exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, paper))
+        print("rep={repetitions}")
+        tf_var = exam_of_the_day(subjectlist, minyear, maxyear, 0, levellist, paper)
+        if type(tf_var) == Embed:
+            return tf_var
+        tf_text = text_formatter(tf_var)
         replist.append(tf_text)
     repstring = "\n\n".join(replist)
     #print(type(repstring), repstring)
+    print(repstring)
     return embed_builder(repstring, name)
         
 
@@ -96,7 +106,7 @@ def exam_of_the_day(subjectlist: list, minyear: int, maxyear: int, time_o_year: 
 
 def find_url(subject, year, toy, level, paper):
     baseurl = f'https://dl.ibdocs.re/IB%20PAST%20PAPERS%20-%20YEAR/{year}%20Examination%20Session/{toy}%20{year}%20Examination%20Session/'
-    finalurl = "ERROR: SOMETHING WENT WRONG IN find_url FUNCTION"
+    finalurl = "ERROR"
     tz = "" if toy == "November" else "TZ1_"
 
     if year == 2023 and toy == "November":
@@ -133,7 +143,8 @@ def find_url(subject, year, toy, level, paper):
         else:
             finalurl = f'{baseurl}Group%203%20-%20Individuals%20and%20Societies/'
 
-    print(subject, paper, level, finalurl)
+    if("ERROR" in finalurl):
+        return error_func(3, "SOMETHING WENT WRONG IN find_url FUNCTION")
     finalurl += urlhandler(subject, paper, level, finalurl) #found in url.py
     return (finalurl + ".pdf", finalurl + "_markscheme.pdf")
 
@@ -163,6 +174,8 @@ def help_func():
     f = open("help_text.txt", "r")
     desc = f.read()
     return Embed(title="HELP!", description=desc.format(version,list_o_subjects, threattext))
+def error_func(error_code:int, error_text:str)->Embed:
+    return Embed(title=f"Error {error_code}", description=error_text, colour=Color.red())
 
 if __name__ == "__main__":
     import sys

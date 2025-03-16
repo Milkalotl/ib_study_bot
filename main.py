@@ -1,7 +1,7 @@
 from typing import Final
 
 import os
-from discord import Intents, Embed, Interaction, app_commands
+from discord import Intents, Embed, Interaction, app_commands, Color
 import asyncio
 from itertools import cycle
 from dotenv import load_dotenv
