@@ -1,0 +1,12 @@
+Physics:29
+Business:30
+Computer_science:2
+History:5
+English:8
+Geography:9
+Biology:12
+Math:15
+Chemistry:16
+Global_politics:19
+French:20
+Sports_exercise_and_health_science:29

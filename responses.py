@@ -3,13 +3,40 @@ from random import choice, randint
 from url import urlhandler
 from discord import Embed, Color
 
-version:float = 0.513
+version:float = 0.672
 
-
-day_of_year = datetime.now().timetuple().tm_yday
-day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday
-
-threattext = f"*There's only* ***{day_of_exam-day_of_year}*** *days til exams!!*"
+def get_threattext(subject = None, isembed = 0):
+    threattext:str = ""
+    day_of_year = datetime.now().timetuple().tm_yday
+    day_of_exam:int = 0
+    if subject == None:
+        subject = ""
+        day_of_exam = datetime(2025, 4, 28).timetuple().tm_yday 
+    else:
+        if len(subject) == 1:
+            subject = single_letter_key.get(subject)
+            if subject == None:
+                return error_func(2, "Something went wrong! One of your subjects is invalid! (Please use the one letter key)") 
+        f = open("subjecttimes.txt", "r")
+        filestring= f.read()
+        f.close()
+        timeday:int = 0
+        for item in filestring.split("\n"):
+            if subject in item:
+                timeday = int(item.split(":")[1].replace(" ", ""))
+                break
+        if timeday == 0:
+            return error_func(7, "Sorry, this subject does not have a valid time because im stupid probably, Please try an equivalent.")
+        timemonth = 4 if timeday > 21 else 5
+        day_of_exam = datetime(2025, timemonth, timeday).timetuple().tm_yday
+    daystilexam = day_of_exam-day_of_year
+    if subject != "":
+        subject += " "
+    threattext = f"*There's only* ***{daystilexam}*** *days ({round(daystilexam/7, 3)} weeks) til {subject}exams!!*"
+    if isembed == 0:
+        return threattext
+    else:
+        return Embed(title = "DAYS", description = threattext, colour=Color.purple())
 
 
 single_letter_key: dict = {"m": "Math", "p": "Physics", "c": "Chemistry", "b": "Biology", "x": "Computer_science", "s": "Sports_exercise_and_health_science", "e": "English", "u": "Spanish", "y": "Business", "g": "Geography", "n": "Global_politics", "h": "History"}
@@ -164,7 +191,8 @@ def text_formatter(params:tuple) -> tuple:
 def embed_builder(hypertext, name):
     built_embed = Embed(
                     title=f"Here you go {name}!",
-                    description=f"{hypertext}\n\n{threattext}"
+                    description=f"{hypertext}\n\n{get_threattext()}",
+                    colour=Color.yellow()
         )
     return built_embed
 def help_func():
@@ -173,7 +201,7 @@ def help_func():
         list_o_subjects += "> " + list(single_letter_key.keys())[list(single_letter_key.values()).index(e)] + " | " + e + "\n"
     f = open("help_text.txt", "r")
     desc = f.read()
-    return Embed(title="HELP!", description=desc.format(version,list_o_subjects, threattext))
+    return Embed(title="HELP!", description=desc.format(version,list_o_subjects, get_threattext()), colour = Color.teal())
 def error_func(error_code:int, error_text:str)->Embed:
     return Embed(title=f"Error {error_code}", description=error_text, colour=Color.red())
 

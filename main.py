@@ -5,7 +5,7 @@ from discord import Intents, Embed, Interaction, app_commands, Color
 import asyncio
 from itertools import cycle
 from dotenv import load_dotenv
-from responses import get_response, help_func 
+from responses import get_response, help_func, get_threattext
 from discord.ext import commands, tasks
 
 
@@ -43,6 +43,10 @@ async def help(interaction: Interaction):
     response = help_func()
     await interaction.response.send_message(embed=response)
 
+@bot.tree.command(name="days", description="Print the days before the first exam, or print for a specific subject!")
+async def days(interaction: Interaction, arg:str=None):
+    response = get_threattext(arg, 1)
+    await interaction.response.send_message(embed=response)
 
 
 
