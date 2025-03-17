@@ -36,19 +36,26 @@ async def bee(interaction: Interaction, arg:str, max_year:int=2023, min_year:int
         max_year = specific_year
         min_year = specific_year
     response = get_response(arg, interaction.user.display_name, max_year, min_year, paper, name, repetitions)
+    whoused(interaction.user.name,"bee ", arg, max_year, min_year, paper, name, repetitions)
     await interaction.response.send_message(embed=response)
 
 @bot.tree.command(name="help", description="Run for help!")
 async def help(interaction: Interaction):
     response = help_func()
+    whoused(interaction.user.name, "help")
     await interaction.response.send_message(embed=response)
 
 @bot.tree.command(name="days", description="Print the days before the first exam, or print for a specific subject!")
 async def days(interaction: Interaction, arg:str=None):
     response = get_threattext(arg, 1)
+    whoused(interaction.user.name, "days", arg)
     await interaction.response.send_message(embed=response)
 
-
+def whoused(REALname:str, type:str, arg:str = None, max_year:int=None, min_year:int=None, paper:int=None, name:str=None, repetitions:int=None)->None:
+    f = open(".whoused", "a")
+    f.write(f"| UN {REALname} |TYPE {type} | UI {arg} | Params: {max_year}, {min_year}, {paper}, {name}, {repetitions}\n")
+    f.close()
+    return
 
 def main():
     bot.run(token=TOKEN)
