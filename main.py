@@ -7,6 +7,7 @@ from itertools import cycle
 from dotenv import load_dotenv
 from responses import get_response, help_func, get_threattext
 from discord.ext import commands, tasks
+import datetime
 
 
 load_dotenv()
@@ -32,6 +33,7 @@ async def on_ready():
 
 @bot.tree.command(name="bee", description="Please refer to /help for syntax")
 async def bee(interaction: Interaction, arg:str, max_year:int=2023, min_year:int=2010, specific_year:int = None, paper:int=0, name:str=None, repetitions:int=1):
+    print(f"USER: {interaction.user.name} used BEE")
     if specific_year != None:
         max_year = specific_year
         min_year = specific_year
@@ -53,7 +55,7 @@ async def days(interaction: Interaction, arg:str=None):
 
 def whoused(REALname:str, type:str, arg:str = None, max_year:int=None, min_year:int=None, paper:int=None, name:str=None, repetitions:int=None)->None:
     f = open(".whoused", "a")
-    f.write(f"| UN {REALname} |TYPE {type} | UI {arg} | Params: {max_year}, {min_year}, {paper}, {name}, {repetitions}\n")
+    f.write(f"[{datetime.datetime.now()}]| UN {REALname} |TYPE {type} | UI {arg} | Params: {max_year}, {min_year}, {paper}, {name}, {repetitions}\n")
     f.close()
     return
 
